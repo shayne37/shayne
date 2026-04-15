@@ -52,7 +52,7 @@
       }
 
       .app-shell.sidebar-collapsed {
-        grid-template-columns: 84px 1fr;
+        grid-template-columns: 64px 1fr;
       }
 
       .sidebar {
@@ -148,8 +148,21 @@
 
       .nav-icon {
         width: 22px;
-        text-align: center;
+        height: 22px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         flex: 0 0 auto;
+      }
+
+      .nav-icon svg {
+        width: 20px;
+        height: 20px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.9;
+        stroke-linecap: round;
+        stroke-linejoin: round;
       }
 
       .nav-label,
@@ -162,7 +175,7 @@
       }
 
       .app-shell.sidebar-collapsed .sidebar {
-        padding-inline: 10px;
+        padding-inline: 6px;
       }
 
       .app-shell.sidebar-collapsed .brand {
@@ -176,6 +189,8 @@
       .app-shell.sidebar-collapsed .nav-item {
         justify-content: center;
         padding-inline: 0;
+        width: 100%;
+        min-height: 40px;
       }
 
       .app-shell.sidebar-collapsed .nav-label,
@@ -202,8 +217,10 @@
       .main {
         min-width: 0;
         padding: 18px;
-        display: grid;
+        display: flex;
+        flex-direction: column;
         gap: 12px;
+        align-items: stretch;
       }
 
       .toolbar,
@@ -221,6 +238,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        flex-wrap: wrap;
         gap: 12px;
       }
 
@@ -242,7 +260,9 @@
       .toolbar-actions {
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
         gap: 8px;
+        justify-content: flex-end;
       }
 
       .button {
@@ -303,9 +323,19 @@
 
       .search-row {
         display: grid;
-        grid-template-columns: 1.4fr 160px 160px 1fr auto auto;
+        grid-template-columns:
+          minmax(220px, 1.8fr)
+          minmax(140px, 1fr)
+          minmax(140px, 1fr)
+          minmax(180px, 1.2fr)
+          minmax(120px, auto)
+          minmax(160px, auto);
         gap: 8px;
         align-items: center;
+      }
+
+      .search-row > * {
+        min-width: 0;
       }
 
       .input,
@@ -326,35 +356,6 @@
         resize: vertical;
       }
 
-      .status-strip {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 8px;
-      }
-
-      .status-box {
-        min-height: 72px;
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        background: var(--panel-soft);
-        padding: 10px 12px;
-      }
-
-      .status-box strong,
-      .status-box span {
-        display: block;
-      }
-
-      .status-box span {
-        font-size: 12px;
-        color: var(--muted);
-        margin-bottom: 6px;
-      }
-
-      .status-box strong {
-        font-size: 16px;
-      }
-
       .workspace {
         border-radius: 12px;
         overflow: hidden;
@@ -367,6 +368,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
         gap: 12px;
       }
 
@@ -382,12 +384,13 @@
 
       .grid-wrap {
         overflow: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 1320px;
+        min-width: 1680px;
       }
 
       th,
@@ -410,6 +413,7 @@
         font-weight: 700;
         text-align: left;
         padding: 10px 10px;
+        white-space: nowrap;
       }
 
       td {
@@ -535,15 +539,29 @@
         color: var(--success);
       }
 
+      .integration-note {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
       @media (max-width: 1200px) {
         .search-row {
-          grid-template-columns: 1fr 1fr 1fr;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
         }
 
-        .status-strip,
         .section-footer,
         .upload-list {
           grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 960px) {
+        .search-row {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        table {
+          min-width: 1680px;
         }
       }
 
@@ -600,7 +618,6 @@
         }
 
         .toolbar-actions,
-        .status-strip,
         .section-footer,
         .upload-list,
         .search-row {
@@ -609,6 +626,7 @@
 
         .toolbar-actions {
           display: grid;
+          justify-content: stretch;
         }
 
         .button {
@@ -622,7 +640,6 @@
       <aside class="sidebar">
         <div class="sidebar-top">
           <div class="brand">
-            <div class="brand-mark">AC</div>
             <div class="brand-copy">
               <p>Desk Review</p>
               <h1>AI 탁상평가</h1>
@@ -640,11 +657,63 @@
         </div>
 
         <nav class="nav">
-          <a class="nav-item active" href="#"><span class="nav-icon">1</span><span class="nav-label">대상물 개요</span></a>
-          <a class="nav-item" href="#"><span class="nav-icon">2</span><span class="nav-label">본건 거래내역</span></a>
-          <a class="nav-item" href="#"><span class="nav-icon">3</span><span class="nav-label">표준지</span></a>
-          <a class="nav-item" href="#"><span class="nav-icon">4</span><span class="nav-label">평가사례</span></a>
-          <a class="nav-item" href="#"><span class="nav-icon">5</span><span class="nav-label">시산가액 검토</span></a>
+          <a class="nav-item active" href="#" aria-label="대상물 개요">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M3 11.5 12 4l9 7.5"></path>
+                <path d="M5.5 10.5V20h13V10.5"></path>
+                <path d="M9.5 20v-5h5v5"></path>
+              </svg>
+            </span>
+            <span class="nav-label">대상물 개요</span>
+          </a>
+          <a class="nav-item" href="#" aria-label="본건 거래내역">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M7 4.5h10"></path>
+                <path d="M7 9h10"></path>
+                <path d="M7 13.5h6"></path>
+                <path d="M5 4.5h.01"></path>
+                <path d="M5 9h.01"></path>
+                <path d="M5 13.5h.01"></path>
+                <rect x="4" y="3" width="16" height="18" rx="2"></rect>
+              </svg>
+            </span>
+            <span class="nav-label">본건 거래내역</span>
+          </a>
+          <a class="nav-item" href="#" aria-label="표준지">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M4 6.5h16"></path>
+                <path d="M4 12h16"></path>
+                <path d="M4 17.5h16"></path>
+                <path d="M8 4v16"></path>
+                <path d="M16 4v16"></path>
+              </svg>
+            </span>
+            <span class="nav-label">표준지</span>
+          </a>
+          <a class="nav-item" href="#" aria-label="평가사례">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M6 18h12"></path>
+                <path d="M8 18V9"></path>
+                <path d="M12 18V5"></path>
+                <path d="M16 18v-6"></path>
+              </svg>
+            </span>
+            <span class="nav-label">평가사례</span>
+          </a>
+          <a class="nav-item" href="#" aria-label="시산가액 검토">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="6.5"></circle>
+                <path d="m16 16 4 4"></path>
+                <path d="M11 8v3l2 2"></path>
+              </svg>
+            </span>
+            <span class="nav-label">시산가액 검토</span>
+          </a>
         </nav>
 
         <div class="sidebar-help">
@@ -658,7 +727,6 @@
         <section class="toolbar">
           <div class="toolbar-title">
             <h2>대상물 등록</h2>
-            <p>ACAP 스타일의 압축형 등록 화면입니다. 상단에서 조회하고 하단 그리드에서 바로 수정합니다.</p>
           </div>
           <div class="toolbar-actions">
             <button
@@ -670,6 +738,7 @@
               ☰
             </button>
             <span class="badge" id="fetch-badge">주소 대기</span>
+            <span class="integration-note" id="integration-note">Mock 모드</span>
             <button class="button ghost" type="button">임시저장</button>
             <button class="button primary" type="button">다음 단계</button>
           </div>
@@ -692,7 +761,6 @@
               class="input"
               id="search-input"
               type="text"
-              value="서울특별시 강남구 대치동 은마아파트"
               placeholder="소재지, 지번, 건물명을 입력하세요"
             />
             <select class="select" id="purpose-select">
@@ -704,37 +772,18 @@
             </select>
             <select class="select" id="type-select">
               <option value="">부동산 종류</option>
-              <option>아파트</option>
               <option>오피스텔</option>
               <option>상가</option>
               <option>토지</option>
+              <option>건축물</option>
             </select>
             <select class="select" id="candidate-select">
-              <option value="0">은마아파트 101동 1203호</option>
-              <option value="1">은마아파트 122동 502호</option>
+              <option value="">대상물 조회 후 선택</option>
             </select>
             <button class="button ghost" id="preview-button" type="button">대상물 조회</button>
             <button class="button primary" id="search-button" type="button">기본정보 불러오기</button>
           </div>
 
-          <div class="status-strip">
-            <div class="status-box">
-              <span>조회 상태</span>
-              <strong id="summary-fetch">대기 중</strong>
-            </div>
-            <div class="status-box">
-              <span>평가 목적</span>
-              <strong id="summary-purpose">미선택</strong>
-            </div>
-            <div class="status-box">
-              <span>부동산 종류</span>
-              <strong id="summary-type">미선택</strong>
-            </div>
-            <div class="status-box">
-              <span>첨부 파일</span>
-              <strong id="summary-files">0개</strong>
-            </div>
-          </div>
         </section>
 
         <section class="workspace">
@@ -751,6 +800,23 @@
 
           <div class="grid-wrap">
             <table>
+              <colgroup>
+                <col style="width: 170px" />
+                <col style="width: 120px" />
+                <col style="width: 170px" />
+                <col style="width: 110px" />
+                <col style="width: 110px" />
+                <col style="width: 120px" />
+                <col style="width: 130px" />
+                <col style="width: 140px" />
+                <col style="width: 150px" />
+                <col style="width: 140px" />
+                <col style="width: 120px" />
+                <col style="width: 150px" />
+                <col style="width: 150px" />
+                <col style="width: 120px" />
+                <col style="width: 170px" />
+              </colgroup>
               <thead>
                 <tr>
                   <th>소재지</th>
@@ -787,10 +853,10 @@
                   <td>
                     <select class="cell-select" id="grid-type-select">
                       <option value="">선택</option>
-                      <option>아파트</option>
                       <option>오피스텔</option>
                       <option>상가</option>
                       <option>토지</option>
+                      <option>건축물</option>
                     </select>
                   </td>
                   <td class="auto-cell"><input class="cell-input" id="field-exclusive-area" type="number" /></td>
@@ -830,7 +896,7 @@
               <textarea
                 class="textarea"
                 placeholder="예: 호수 정보는 등기부 확인 후 확정, 상가 여부 혼재 가능성 있음"
-              >은마아파트 재건축 이슈 및 개별 호수별 상태 차이가 가격에 영향 가능. 호수는 등기부등본으로 최종 확인 필요.</textarea>
+              ></textarea>
             </div>
 
             <div class="upload-box">
@@ -882,58 +948,18 @@
       const typeSelect = document.querySelector("#type-select");
       const gridPurposeSelect = document.querySelector("#grid-purpose-select");
       const gridTypeSelect = document.querySelector("#grid-type-select");
-      const summaryPurpose = document.querySelector("#summary-purpose");
-      const summaryType = document.querySelector("#summary-type");
-      const summaryFiles = document.querySelector("#summary-files");
-      const summaryFetch = document.querySelector("#summary-fetch");
       const fetchBadge = document.querySelector("#fetch-badge");
       const fileBadge = document.querySelector("#file-badge");
       const recordsBadge = document.querySelector("#records-badge");
       const mappingBadge = document.querySelector("#mapping-badge");
+      const integrationNote = document.querySelector("#integration-note");
       const fileInputs = document.querySelectorAll(".file-input");
+      const noteTextarea = document.querySelector(".textarea");
 
-      const dataset = [
-        {
-          address: "서울특별시 강남구 대치동",
-          parcel: "316",
-          buildingName: "은마아파트 101동",
-          exclusiveArea: "84.43",
-          supplyArea: "101.92",
-          landShareArea: "43.12",
-          buildingWing: "101동",
-          unitNumber: "1203호",
-          floor: "12",
-          totalFloors: "14",
-          builtYear: "1979",
-          usage: "공동주택",
-          zoning: "제3종일반주거지역",
-          officialYear: "2025",
-          landPrice: "8,275,000",
-          purpose: "담보평가",
-          type: "아파트",
-          fetchLabel: "은마아파트 101동 1203호",
-        },
-        {
-          address: "서울특별시 강남구 대치동",
-          parcel: "316",
-          buildingName: "은마아파트 122동",
-          exclusiveArea: "76.79",
-          supplyArea: "95.11",
-          landShareArea: "39.74",
-          buildingWing: "122동",
-          unitNumber: "502호",
-          floor: "5",
-          totalFloors: "14",
-          builtYear: "1980",
-          usage: "공동주택",
-          zoning: "제3종일반주거지역",
-          officialYear: "2025",
-          landPrice: "8,275,000",
-          purpose: "담보평가",
-          type: "아파트",
-          fetchLabel: "은마아파트 122동 502호",
-        },
-      ];
+      const APP_CONFIG = {
+        apiMode: "backend",
+        apiBaseUrl: "http://localhost:8787",
+      };
 
       const fieldMap = {
         address: document.querySelector("#field-address"),
@@ -987,38 +1013,123 @@
       }
 
       function updateSummary() {
-        summaryPurpose.textContent = purposeSelect.value || gridPurposeSelect.value || "미선택";
-        summaryType.textContent = typeSelect.value || gridTypeSelect.value || "미선택";
-
         const count = [...fileInputs].reduce((total, input) => total + input.files.length, 0);
-        summaryFiles.textContent = `${count}개`;
         fileBadge.textContent = `${count}건 업로드`;
       }
 
       function setFetchState(text, tone) {
-        summaryFetch.textContent = text;
         fetchBadge.textContent = text;
         fetchBadge.className = `badge ${tone || ""}`.trim();
       }
 
-      function previewCandidates() {
-        setFetchState("대상물 확인", "");
-        recordsBadge.textContent = "대상물 2건";
-        mappingBadge.textContent = "선택 후 불러오기";
-        candidateSelect.options[0].textContent = dataset[0].fetchLabel;
-        candidateSelect.options[1].textContent = dataset[1].fetchLabel;
+      function updateIntegrationModeUI() {
+        integrationNote.textContent =
+          APP_CONFIG.apiMode === "backend"
+            ? `실제 API 모드 (${APP_CONFIG.apiBaseUrl})`
+            : "Mock 모드";
       }
 
-      function applyCandidate(index) {
-        const data = dataset[index];
+      async function detectBackendMode() {
+        try {
+          const response = await fetch(`${APP_CONFIG.apiBaseUrl}/api/health`);
+          if (!response.ok) throw new Error("health check failed");
+        } catch (error) {
+          APP_CONFIG.apiMode = "mock";
+        }
+        updateIntegrationModeUI();
+      }
+
+      async function requestJson(path, options = {}) {
+        const response = await fetch(`${APP_CONFIG.apiBaseUrl}${path}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          ...options,
+        });
+
+        if (!response.ok) {
+          let message = `API 요청 실패: ${response.status}`;
+
+          try {
+            const errorBody = await response.json();
+            if (errorBody?.error) {
+              message = errorBody.error;
+            }
+          } catch (error) {
+            // Ignore parse errors and keep the default message.
+          }
+
+          throw new Error(message);
+        }
+
+        return response.json();
+      }
+
+      function setTypeFields(data) {
+        if (data.purpose) {
+          purposeSelect.value = data.purpose;
+          gridPurposeSelect.value = data.purpose;
+        }
+
+        if (data.type) {
+          typeSelect.value = data.type;
+          gridTypeSelect.value = data.type;
+        }
+      }
+
+      function renderCandidateOptions(items) {
+        candidateSelect.innerHTML = "";
+
+        items.forEach((item, index) => {
+          const option = document.createElement("option");
+          option.value = String(index);
+          option.textContent = item.fetchLabel || item.label || `대상물 ${index + 1}`;
+          candidateSelect.appendChild(option);
+        });
+      }
+
+      async function previewCandidatesFromBackend() {
+        const payload = {
+          query: searchInput.value.trim(),
+          propertyType: typeSelect.value || gridTypeSelect.value || "",
+        };
+
+        const result = await requestJson("/api/basic-info/candidates", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+
+        const items = Array.isArray(result.items) ? result.items : [];
+        if (!items.length) {
+          throw new Error("조회된 대상물이 없습니다.");
+        }
+
+        renderCandidateOptions(items);
+        recordsBadge.textContent = `대상물 ${items.length}건`;
+        mappingBadge.textContent = "선택 후 불러오기";
+        setFetchState("대상물 확인", "");
+      }
+
+      async function fetchPropertyFromBackend() {
+        const selectedIndex = Number(candidateSelect.value || 0);
+        const payload = {
+          query: searchInput.value.trim(),
+          propertyType: typeSelect.value || gridTypeSelect.value || "",
+          candidateIndex: selectedIndex,
+        };
+
+        const result = await requestJson("/api/basic-info/fetch", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+
+        const data = result.item || result;
         Object.entries(fieldMap).forEach(([key, field]) => {
           field.value = data[key] || "";
         });
 
-        purposeSelect.value = data.purpose;
-        typeSelect.value = data.type;
-        gridPurposeSelect.value = data.purpose;
-        gridTypeSelect.value = data.type;
+        setTypeFields(data);
+        if (result.note) noteTextarea.value = result.note;
 
         setFetchState("조회 완료", "success");
         recordsBadge.textContent = "공적장부 완료";
@@ -1026,14 +1137,31 @@
         updateSummary();
       }
 
-      function fetchProperty() {
-        setFetchState("조회 중", "warn");
-        recordsBadge.textContent = "공적장부 조회 중";
-        mappingBadge.textContent = "필드 매핑 중";
+      async function previewCandidatesHandler() {
+        try {
+          setFetchState("대상물 조회 중", "warn");
+          await previewCandidatesFromBackend();
+        } catch (error) {
+          console.error(error);
+          setFetchState("조회 실패", "warn");
+          recordsBadge.textContent = "대상물 조회 실패";
+          mappingBadge.textContent = error.message || "API 설정 확인 필요";
+        }
+      }
 
-        window.setTimeout(() => {
-          applyCandidate(Number(candidateSelect.value));
-        }, 350);
+      async function fetchPropertyHandler() {
+        try {
+          setFetchState("조회 중", "warn");
+          recordsBadge.textContent = "공적장부 조회 중";
+          mappingBadge.textContent = "필드 매핑 중";
+
+          await fetchPropertyFromBackend();
+        } catch (error) {
+          console.error(error);
+          setFetchState("조회 실패", "warn");
+          recordsBadge.textContent = "공적장부 조회 실패";
+          mappingBadge.textContent = error.message || "API 설정 확인 필요";
+        }
       }
 
       sidebarToggle.addEventListener("click", toggleSidebar);
@@ -1047,8 +1175,8 @@
         syncSidebarButtons();
       });
 
-      previewButton.addEventListener("click", previewCandidates);
-      searchButton.addEventListener("click", fetchProperty);
+      previewButton.addEventListener("click", previewCandidatesHandler);
+      searchButton.addEventListener("click", fetchPropertyHandler);
 
       [purposeSelect, typeSelect, gridPurposeSelect, gridTypeSelect].forEach((element) => {
         element.addEventListener("change", () => {
@@ -1056,6 +1184,7 @@
           if (element === gridPurposeSelect) purposeSelect.value = gridPurposeSelect.value;
           if (element === typeSelect) gridTypeSelect.value = typeSelect.value;
           if (element === gridTypeSelect) typeSelect.value = gridTypeSelect.value;
+
           updateSummary();
         });
       });
@@ -1072,12 +1201,13 @@
       searchInput.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
           event.preventDefault();
-          fetchProperty();
+          fetchPropertyHandler();
         }
       });
 
       syncSidebarButtons();
-      applyCandidate(0);
+      detectBackendMode();
+      updateSummary();
     </script>
   </body>
 </html>
